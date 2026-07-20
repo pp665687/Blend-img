@@ -8,7 +8,7 @@ on:
 jobs:
   render_scene:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
 
     steps:
     - name: Checkout Repository
@@ -43,7 +43,7 @@ jobs:
     - name: Execute Background Render
       timeout-minutes: 240
       run: |
-        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 2" -- --cycles-device CUDA
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 2" -- --cycles-device CPU
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
