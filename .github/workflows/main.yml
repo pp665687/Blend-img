@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-jobs:
+   jobs:
   render_scene:
     runs-on: ubuntu-latest
     timeout-minutes: 120  # Increase to 2 hours
