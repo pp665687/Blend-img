@@ -1,0 +1,51 @@
+name: Blender 5.2 LTS CLI Image Render
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  render_scene:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Gdown
+      run: |
+        python -m pip install --upgrade pip
+        pip install gdown
+
+    - name: Download Blend File from Google Drive
+      run: |
+        gdown --id 1wiKV9ffh4BdynmyQuWsw11LrEwJfCz7D -O AEPBR_Beta_1.0.blend
+
+    - name: Check Downloaded File Size
+      run: ls -lh AEPBR_Beta_1.0.blend
+
+    - name: Install Blender 5.2 LTS
+      run: |
+        wget https://download.blender.org/release/Blender5.2/blender-5.2.0-linux-x64.tar.xz
+        tar -xf blender-5.2.0-linux-x64.tar.xz
+        echo "$GITHUB_WORKSPACE/blender-5.2.0-linux-x64" >> $GITHUB_PATH
+
+    - name: Verify Blender Version
+      run: blender --version
+
+    - name: Execute Background Render
+      run: |
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 -- --cycles-device CPU
+        
+    - name: Upload Rendered Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rendered-image
+        path: render_output_0001.png
+        
