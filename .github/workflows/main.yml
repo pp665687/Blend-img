@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1-M9NGX04VJYx7tdAwnElu6NmrA-FbXuW
+        gdown 1Dk5bPS0uXeHxtGICu71rLhKITDBXRWMN
 
     - name: Check Downloaded File Size
       run: ls -lh AEPBR_Beta_1.0.blend
