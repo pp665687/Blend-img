@@ -39,7 +39,7 @@ jobs:
     - name: Verify Blender Version
       run: blender --version
 
-        - name: Execute Background Render
+    - name: Execute Background Render
       run: |
         blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 32
         
@@ -48,4 +48,3 @@ jobs:
       with:
         name: rendered-image
         path: render_output_0001.png
-        
