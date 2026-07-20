@@ -8,7 +8,7 @@ on:
 jobs:
   render_scene:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120  # Increase to 2 hours
 
     steps:
     - name: Checkout Repository
@@ -40,10 +40,10 @@ jobs:
     - name: Verify Blender Version
       run: blender --version
 
-    - name: Execute Background Render
-      timeout-minutes: 30
+  - name: Execute Background Render
+      timeout-minutes: 115  # Slightly less than job timeout
       run: |
-       blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 8
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 8
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
