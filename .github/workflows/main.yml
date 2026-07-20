@@ -8,6 +8,7 @@ on:
 jobs:
   render_scene:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - name: Checkout Repository
@@ -40,11 +41,13 @@ jobs:
       run: blender --version
 
     - name: Execute Background Render
+      timeout-minutes: 30
       run: |
-        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 32
+    blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 8
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
         name: rendered-image
         path: render_output_0001.png
+
