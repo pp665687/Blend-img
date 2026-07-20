@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1wiKV9ffh4BdynmyQuWsw11LrEwJfCz7D
+        gdown 1-M9NGX04VJYx7tdAwnElu6NmrA-FbXuW
 
     - name: Check Downloaded File Size
       run: ls -lh AEPBR_Beta_1.0.blend
@@ -43,7 +43,7 @@ jobs:
     - name: Execute Background Render
       timeout-minutes: 240
       run: |
-        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 2" -- --cycles-device CPU
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
