@@ -43,7 +43,7 @@ jobs:
     - name: Execute Background Render
       timeout-minutes: 30
       run: |
-    blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 8
+       blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --cycles-device CPU --cycles-samples 8
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
