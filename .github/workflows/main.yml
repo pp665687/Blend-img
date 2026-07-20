@@ -5,10 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-  jobs:
+jobs:
   render_scene:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # Increase to 2 hours
+    timeout-minutes: 180
 
     steps:
     - name: Checkout Repository
@@ -41,13 +41,12 @@ on:
       run: blender --version
 
     - name: Execute Background Render
-      timeout-minutes: 170  # Increase from 115 to 170 minutes
+      timeout-minutes: 170
       run: |
-     blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
         name: rendered-image
         path: render_output_0001.png
-
