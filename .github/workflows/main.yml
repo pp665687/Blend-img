@@ -41,12 +41,13 @@ jobs:
       run: blender --version
 
     - name: Execute Background Render
-      timeout-minutes: 170
+      timeout-minutes: 240
       run: |
-        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        blender -b "AEPBR_Beta_1.0.blend" -E CYCLES -o "//render_output_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 2" -- --cycles-device CUDA
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
         name: rendered-image
         path: render_output_0001.png
+
