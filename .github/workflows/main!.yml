@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 12T3AYU3N-h9CCL50Bv4MsncsGeWeuXuT
+        gdown 1tnfsiB-KvtcDEHYJTDs672j1LNNf8TJ9
 
     - name: Check Downloaded File Size
       run: ls -lh Konqi_drive.blend
@@ -40,17 +40,16 @@ jobs:
     - name: Verify Blender Version
       run: blender --version
 
-    - name: Render Animation
+    - name: Execute Background Render
+      timeout-minutes: 240
       run: |
-        # 1. Force the runner to see the installed Blender binary in this step
         export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
-
-        # 2. Creates the output directory for frames
+        
+        # Ensure output folder container is explicitly created before writing
         mkdir -p render_output
         
-        # 3. Executes headless background render
-        # CHANGED: Swapped '//' (Windows style) for './' (Linux runner style)
-        blender -b "Konqi_drive.blend" -o "./render_output/frame_#####" -a
+        # Execute render targeting the subfolder path
+        blender -b "Konqi_drive.blend" -E CYCLES -o "./render_output/frame_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
