@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1tnfsiB-KvtcDEHYJTDs672j1LNNf8TJ9
+        gdown 1vQk5qiaFdPgK6PUcD9UxIBPhBFrt_ZW0
 
     - name: Check Downloaded File Size
       run: ls -lh Konqi_drive.blend
