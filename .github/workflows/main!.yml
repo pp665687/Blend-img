@@ -54,5 +54,8 @@ jobs:
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: rendered-image
-        path: render_output_*
+        name: rendered-animation-sequence
+        # Points directly to the folder containing your frames
+        path: render_output/
+        # Prevents the workflow from silently passing if the folder is empty
+        if-no-files-found: error
