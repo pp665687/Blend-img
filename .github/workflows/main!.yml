@@ -63,7 +63,7 @@ jobs:
                 
                 if os.path.exists(new_path):
                     img.filepath = new_path
-                    img.reload()  # Forces Cycles to load the file into memory right now
+                    img.reload()
                     print(f"[SUCCESS] Relinked and loaded texture: {new_path}")
                 else:
                     print(f"[WARNING] Could not find {filename} in {target_dir}")
@@ -72,18 +72,24 @@ jobs:
         bpy.context.scene.cycles.samples = 4
         EOF
 
-        # 2. Render out as high-quality individual PNG frames first (Bypasses Blender MKV bug)
+        # 2. Render out as high-quality individual PNG frames first
         blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
+
+    - name: Install FFmpeg
+      run: |
+        # Installs the FFmpeg binary package globally on the Linux runner
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
 
     - name: Compile Frames into True MP4 Video
       run: |
-        # CHANGED: Swapped %05d for %04d to match Blender's default 4-digit padding sequence (frame_0110.png)
-        ffmpeg -framerate 24 -i ./render_output/frame_%04d.png -c:v libx264 -pix_fmt yuv420p ./render_output/animation_0001-0110.mp4
+        # Use native system ffmpeg to cleanly compile images into a true non-freezing MP4 container
+        # Your log output showed 5 digits (frame_00110.png), so we keep %05d to match it perfectly
+        ffmpeg -framerate 24 -i ./render_output/frame_%05d.png -c:v libx264 -pix_fmt yuv420p ./render_output/animation_0001-0110.mp4
         
     - name: Upload Clean Video Output
       uses: actions/upload-artifact@v4
       with:
         name: rendered-mp4-video
-        # Uploads ONLY the perfectly encoded, non-freezing final MP4 file
         path: render_output/animation_0001-0110.mp4
         if-no-files-found: error
