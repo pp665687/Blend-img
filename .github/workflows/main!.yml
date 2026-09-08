@@ -26,10 +26,10 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1KB0PUJdoVuk9MrXBxh3a58bI-eu2lntb
+        gdown 1Tx4XkiEk4f9PayZ7vcoJL1Zu2-E3Px3b
 
     - name: Check Downloaded File Size
-      run: ls -lh Untitled1.blend
+      run: ls -lh New Folder.zip
 
     - name: Install Blender 5.2 LTS
       run: |
