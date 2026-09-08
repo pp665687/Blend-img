@@ -51,7 +51,7 @@ jobs:
         mkdir -p render_output
         
         # CHANGED: Added "New Folder/" prefix to match the extracted location
-        blender -b "New Folder/Untitled1.blend" -E CYCLES -o "./render_output/frame_#####" -F PNG -f 1 --python-expr "import bpy; img=bpy.data.images.get('Intern.png'); import os; path='New Folder/Intern.png'; img.filepath=os.path.abspath(path) if img else None; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        blender -b "New Folder/Untitled1.blend" -E CYCLES -o "./render_output/frame_#####" -F PNG -f 1 --python-expr "import bpy, os; [setattr(img, 'filepath', os.path.abspath(os.path.join('New Folder', os.path.basename(img.filepath)))) for img in bpy.data.images if img.type == 'IMAGE']; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
 
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
