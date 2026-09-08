@@ -86,10 +86,9 @@ jobs:
         # 1. Create a clean folder for the extracted images
         mkdir -p extracted_frames
         
-        # 2. Extract every single video frame into 5-digit padded PNG files
-        # -i: Input video path
-        # -vsync vfr: Ensures every single frame drops out perfectly with zero skipping
-        ffmpeg -i ./render_output/animation_0001-0110.mp4 -vsync vfr ./extracted_frames/frame_%05d.png
+        # 2. Extract frames using wildcard (*) to find the video regardless of its exact text name
+        # Updated -vsync to the modern -fps_mode vfr parameter to prevent deprecation warnings
+        ffmpeg -i ./render_output/*.mp4 -fps_mode vfr ./extracted_frames/frame_%05d.png
 
     - name: Upload Extracted PNG Frames Artifact
       uses: actions/upload-artifact@v4
