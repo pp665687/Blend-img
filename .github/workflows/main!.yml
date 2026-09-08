@@ -50,7 +50,7 @@ jobs:
         
         # -F FFMPEG tells Blender to output a video
         # The python expression forces the container to MP4 (MPEG4)
-        blender -b "Untitled1.blend" -E CYCLES -o "./render_output/animation_output" -F FFMPEG -a --python-expr "import bpy; bpy.context.scene.render.ffmpeg.format = 'MPEG4'; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        blender -b "Untitled1.blend" -E CYCLES -o "./render_output/frame_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
