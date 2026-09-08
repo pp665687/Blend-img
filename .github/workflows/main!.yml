@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1Tx4XkiEk4f9PayZ7vcoJL1Zu2-E3Px3b
+        gdown 171Rv_4GpKRTkvQSyCUJ4YVBkDkb74TWM
 
     - name: Check Downloaded File Size
       run: | 
