@@ -29,7 +29,9 @@ jobs:
         gdown 1Tx4XkiEk4f9PayZ7vcoJL1Zu2-E3Px3b
 
     - name: Check Downloaded File Size
-      run: ls -lh New Folder.zip
+      run: | 
+         unzip "New_Folder.zip"
+         ls -lh
 
     - name: Install Blender 5.2 LTS
       run: |
