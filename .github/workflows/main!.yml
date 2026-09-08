@@ -72,7 +72,9 @@ jobs:
         EOF
 
         # 2. Render out as high-quality individual PNG frames directly
-        blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
+        blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py \
+          --python-expr "import bpy; bpy.app.handlers.render_pre.append(lambda scene: scene.frame_set(bpy.context.scene.frame_current))" \
+          -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
 
     - name: Upload Raw PNG Frames Artifact
       uses: actions/upload-artifact@v4
