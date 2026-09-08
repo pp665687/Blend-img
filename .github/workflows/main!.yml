@@ -67,7 +67,7 @@ jobs:
                       print(f"[WARNING] Could not find {filename} in {target_dir}")
 
           # Set lower samples to speed up the CPU render
-          bpy.context.scene.cycles.samples = 4
+          bpy.context.scene.cycles.samples = 30
           EOF
 
           # Render out individual PNG frames using the armature unfreeze handler logic
