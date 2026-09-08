@@ -77,9 +77,8 @@ jobs:
 
     - name: Compile Frames into True MP4 Video
       run: |
-        # Use native system ffmpeg to cleanly compile images into a true non-freezing MP4 container
-        # Match -framerate (e.g. 24 or 30) with your Blender project FPS settings
-        ffmpeg -framerate 24 -i ./render_output/frame_%05d.png -c:v libx264 -pix_fmt yuv420p ./render_output/animation_0001-0110.mp4
+        # CHANGED: Swapped %05d for %04d to match Blender's default 4-digit padding sequence (frame_0110.png)
+        ffmpeg -framerate 24 -i ./render_output/frame_%04d.png -c:v libx264 -pix_fmt yuv420p ./render_output/animation_0001-0110.mp4
         
     - name: Upload Clean Video Output
       uses: actions/upload-artifact@v4
