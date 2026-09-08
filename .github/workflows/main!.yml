@@ -81,16 +81,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    - name: Compile Frames into True MP4 Video
+    - name: Extract Video Frames to PNG
       run: |
-        # -g 1: Keyframe on every frame ensures mobile video players never freeze or lag at the end
-        # -f mp4: Explicitly locks down the container layout rules
-        ffmpeg -framerate 24 -i ./render_output/frame_%05d.png -c:v libx264 -pix_fmt yuv420p -g 1 -f mp4 ./render_output/animation_0001-0110.mp4
-
+        # 1. Create a clean folder for the extracted images
+        mkdir -p extracted_frames
         
-    - name: Upload Clean Video Output
+        # 2. Extract every single video frame into 5-digit padded PNG files
+        # -i: Input video path
+        # -vsync vfr: Ensures every single frame drops out perfectly with zero skipping
+        ffmpeg -i ./render_output/animation_0001-0110.mp4 -vsync vfr ./extracted_frames/frame_%05d.png
+
+    - name: Upload Extracted PNG Frames Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: rendered-mp4-video
-        path: render_output/animation_0001-0110.mp4
+        name: unpacked-png-frames
+        path: extracted_frames/
         if-no-files-found: error
