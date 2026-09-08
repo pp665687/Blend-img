@@ -14,7 +14,18 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: Set up Python    - name: Execute Background Render
+      timeout-minutes: 240
+      run: |
+        export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
+        
+        # Ensure output folder container is explicitly created before writing
+        mkdir -p render_output
+        
+        # -F FFMPEG tells Blender to output a video
+        # The python expression forces the container to MP4 (MPEG4)
+        blender -b "Untitled1.blend" -E CYCLES -o "./render_output/frame_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
@@ -50,10 +61,9 @@ jobs:
         # Ensure output folder container is explicitly created before writing
         mkdir -p render_output
         
-        # -F FFMPEG tells Blender to output a video
-        # The python expression forces the container to MP4 (MPEG4)
-        blender -b "Untitled1.blend" -E CYCLES -o "./render_output/frame_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
-        
+        # CHANGED: Added "New Folder/" prefix to match the extracted location
+        blender -b "New Folder/Untitled1.blend" -E CYCLES -o "./render_output/frame_#####" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
