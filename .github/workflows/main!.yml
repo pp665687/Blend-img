@@ -48,7 +48,7 @@ jobs:
         export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
         mkdir -p render_output
         
-        # 1. Update texture paths, optimize samples, and configure direct MP4 encoding
+        # 1. Update texture paths, optimize samples, and fix the MP4 container format string
         cat << 'EOF' > fix_textures.py
         import bpy
         import os
@@ -70,15 +70,15 @@ jobs:
         # Optimize performance for CPU runner
         bpy.context.scene.cycles.samples = 4
 
-        # Configure Blender FFMPEG settings for direct MP4 generation
+        # FIXED FORMAT STRING: 'MPEG_4' enforces actual MP4 container creation
         bpy.context.scene.render.image_settings.file_format = 'FFMPEG'
-        bpy.context.scene.render.ffmpeg.format = 'MPEG4'
+        bpy.context.scene.render.ffmpeg.format = 'MPEG_4'
         bpy.context.scene.render.ffmpeg.codec = 'H264'
         bpy.context.scene.render.ffmpeg.constant_rate_factor = 'MEDIUM'
         EOF
 
         # 2. Run Blender, using -F FFMPEG and -a for the full animation sequence
-        blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py -o "./render_output/animation" -F FFMPEG -a -- --cycles-device CPU
+        blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py -o "./render_output/animation_####" -F FFMPEG -a -- --cycles-device CPU
 
     - name: Upload Rendered Video Artifact
       uses: actions/upload-artifact@v4
