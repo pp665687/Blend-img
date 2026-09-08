@@ -42,45 +42,52 @@ jobs:
     - name: Verify Blender Version
       run: blender --version
 
-    - name: Execute Background Render
+    - name: Execute Background Render to PNG Sequence
       timeout-minutes: 240
       run: |
-        export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
-        mkdir -p render_output
-        
-        # 1. Create a Python script that forces Blender to update paths and reload files
-        cat << 'EOF' > fix_textures.py
-        import bpy
-        import os
+          export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
+          mkdir -p render_output
+          
+          cat << 'EOF' > fix_textures.py
+          import bpy
+          import os
 
-        target_dir = os.path.abspath("New Folder")
+          target_dir = os.path.abspath("New Folder")
 
-        for img in bpy.data.images:
-            if img.type == 'IMAGE':
-                filename = os.path.basename(img.filepath)
-                new_path = os.path.join(target_dir, filename)
-                
-                if os.path.exists(new_path):
-                    img.filepath = new_path
-                    img.reload()
-                    print(f"[SUCCESS] Relinked and loaded texture: {new_path}")
-                else:
-                    print(f"[WARNING] Could not find {filename} in {target_dir}")
+          for img in bpy.data.images:
+              if img.type == 'IMAGE':
+                  filename = os.path.basename(img.filepath)
+                  new_path = os.path.join(target_dir, filename)
+                  
+                  if os.path.exists(new_path):
+                      img.filepath = new_path
+                      img.reload()
+                      print(f"[SUCCESS] Relinked and loaded texture: {new_path}")
+                  else:
+                      print(f"[WARNING] Could not find {filename} in {target_dir}")
 
-        # Set lower samples to speed up the CPU render
-        bpy.context.scene.cycles.samples = 4
-        EOF
+          # Set lower samples to speed up the CPU render
+          bpy.context.scene.cycles.samples = 4
+          EOF
 
-        # 2. Render out as high-quality individual PNG frames directly
-        blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py \
-          --python-expr "import bpy; bpy.app.handlers.render_pre.append(lambda scene: scene.frame_set(bpy.context.scene.frame_current))" \
-          -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
+          # Render out individual PNG frames using the armature unfreeze handler logic
+          blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py \
+            --python-expr "import bpy; bpy.app.handlers.render_pre.append(lambda scene: scene.frame_set(bpy.context.scene.frame_current))" \
+            -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
 
-    - name: Upload Raw PNG Frames Artifact
+    - name: Set up FFmpeg (Instant Binary Setup)
+      uses: FedericoCarboni/setup-ffmpeg@v3
+      id: ffmpeg
+
+    - name: Compile Frames into True MP4 Video
+      run: |
+          # Compiles the animating PNG sequence into a highly compatible, non-freezing MP4 container
+          # -vf forces even pixel dimensions to satisfy mobile device decoder constraints
+          ffmpeg -framerate 24 -i ./render_output/frame_%05d.png -c:v libx264 -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -movflags +faststart ./render_output/final_animation.mp4
+
+    - name: Upload Finished MP4 Video
       uses: actions/upload-artifact@v4
       with:
-        name: unpacked-png-frames
-        # This uploads the exact PNG images Blender just generated
-        path: render_output/
-        if-no-files-found: error
-
+          name: finished-mp4-video
+          path: render_output/final_animation.mp4
+          if-no-files-found: error
