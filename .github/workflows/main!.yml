@@ -26,7 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 1vQk5qiaFdPgK6PUcD9UxIBPhBFrt_ZW0
+        gdown 1KB0PUJdoVuk9MrXBxh3a58bI-eu2lntb
 
     - name: Check Downloaded File Size
       run: ls -lh Konqi_drive.blend
@@ -48,14 +48,13 @@ jobs:
         # Ensure output folder container is explicitly created before writing
         mkdir -p render_output
         
-        # Execute render targeting the subfolder path
-        blender -b "Konqi_drive.blend" -E CYCLES -o "./render_output/frame_" -F PNG -f 1 --python-expr "import bpy; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
+        # -F FFMPEG tells Blender to output a video
+        # The python expression forces the container to MP4 (MPEG4)
+        blender -b "Untitled1.blend" -E CYCLES -o "./render_output/animation_output" -F FFMPEG -a --python-expr "import bpy; bpy.context.scene.render.ffmpeg.format = 'MPEG4'; bpy.context.scene.cycles.samples = 4" -- --cycles-device CPU
         
     - name: Upload Rendered Artifact
       uses: actions/upload-artifact@v4
       with:
         name: rendered-animation-sequence
-        # Points directly to the folder containing your frames
         path: render_output/
-        # Prevents the workflow from silently passing if the folder is empty
         if-no-files-found: error
