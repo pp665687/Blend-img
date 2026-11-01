@@ -26,12 +26,7 @@ jobs:
 
     - name: Download Blend File from Google Drive
       run: |
-        gdown 19Nxb8ck5SwaW-DtglCq6byiM1p1JnRep
-
-    - name: Check Downloaded File Size
-      run: | 
-         unzip "New_Folder.zip"
-         ls -lh
+        gdown 1YxUV97ado44BKtIAp78xvgtzlxts8ix3
 
     - name: Install Blender 5.2 LTS
       run: |
@@ -71,7 +66,7 @@ jobs:
           EOF
 
           # Render out individual PNG frames using the armature unfreeze handler logic
-          blender -b "New Folder/Untitled1.blend" -E CYCLES -P fix_textures.py \
+          blender -b "konqi_wip.blend" -E CYCLES -P fix_textures.py \
             --python-expr "import bpy; bpy.app.handlers.render_pre.append(lambda scene: scene.frame_set(bpy.context.scene.frame_current))" \
             -o "./render_output/frame_#####" -F PNG -a -- --cycles-device CPU
 
