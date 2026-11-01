@@ -28,6 +28,11 @@ jobs:
       run: |
         gdown 1YxUV97ado44BKtIAp78xvgtzlxts8ix3
 
+    - name: Install Blender System Dependencies (OpenGL/EGL)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libegl1 libgl1 libx11-6 libxxf86vm1 libxcursor1 libxi6 libxinerama1 libxrandr2
+
     - name: Install Blender 5.2 LTS
       run: |
         wget https://download.blender.org/release/Blender5.2/blender-5.2.3-linux-x64.tar.xz
