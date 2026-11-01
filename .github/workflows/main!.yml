@@ -35,9 +35,9 @@ jobs:
 
     - name: Install Blender 5.2 LTS
       run: |
-        wget https://download.blender.org/release/Blender5.2/blender-5.2.0-linux-x64.tar.xz
-        tar -xf blender-5.2.0-linux-x64.tar.xz
-        echo "$GITHUB_WORKSPACE/blender-5.2.0-linux-x64" >> $GITHUB_PATH
+        wget https://download.blender.org/release/Blender5.2/blender-5.2.3-linux-x64.tar.xz
+        tar -xf blender-5.2.3-linux-x64.tar.xz
+        echo "$GITHUB_WORKSPACE/blender-5.2.3-linux-x64" >> $GITHUB_PATH
 
     - name: Verify Blender Version
       run: blender --version
@@ -45,7 +45,7 @@ jobs:
     - name: Execute Background Render to PNG Sequence
       timeout-minutes: 240
       run: |
-          export PATH="$GITHUB_WORKSPACE/blender-5.2.0-linux-x64:$PATH"
+          export PATH="$GITHUB_WORKSPACE/blender-5.2.3-linux-x64:$PATH"
           mkdir -p render_output
           
           cat << 'EOF' > fix_textures.py
